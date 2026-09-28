@@ -47,9 +47,25 @@ header {
     font-weight: 600;
 }
 
+#timer-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 #timer {
     font-size: 17px;
     font-weight: 600;
+}
+
+#pause-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: #e5e7eb;
+    color: #1f1f1f;
+    cursor: pointer;
+    font-size: 14px;
 }
 
 
@@ -577,8 +593,9 @@ body.math-mode #options {
         PSAT Practice Test
     </h1>
 
-    <div id="timer">
-        32:00
+    <div id="timer-area">
+        <div id="timer">32:00</div>
+        <button id="pause-btn" onclick="togglePause()">Pause</button>
     </div>
 
 </header>
@@ -702,6 +719,8 @@ let timer;
 
 let timeLeft = 32 * 60;
 
+let isPaused = false;
+
 
 /* =========================
    MODULE TIMES
@@ -824,6 +843,7 @@ function loadStage() {
     questionIndex = 0;
 
     timeLeft = getModuleTime(stage);
+    isPaused = false;
 
     clearInterval(timer);
 
@@ -1374,11 +1394,13 @@ function updateTimer() {
     const seconds =
         timeLeft % 60;
 
-
     document.getElementById("timer")
         .textContent =
         `${minutes}:${String(seconds).padStart(2, "0")}`;
 
+    if (isPaused) {
+        return;
+    }
 
     if (timeLeft <= 0) {
 
@@ -1389,8 +1411,21 @@ function updateTimer() {
         return;
     }
 
-
     timeLeft--;
+
+}
+
+
+/* =========================
+   PAUSE TIMER
+========================= */
+
+function togglePause() {
+
+    isPaused = !isPaused;
+
+    document.getElementById("pause-btn").textContent =
+        isPaused ? "Resume" : "Pause";
 
 }
 
@@ -1698,6 +1733,8 @@ function restartTest() {
 
     marked = {};
 
+    isPaused = false;
+
 
     englishQuizData.selectedModule =
         null;
@@ -1734,4 +1771,3 @@ loadStage();
 </body>
 </html>
 ````
-
